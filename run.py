@@ -9,7 +9,7 @@ import streamlit as st
 
 from datetime import datetime
 from modules.model_gensim import ModelGensim
-from modules.model_als import mode_als
+# from modules.model_als import mode_als
 
 # ------------ Load Mode ------------ # 
 # --- Content Base --- #
@@ -63,13 +63,13 @@ elif choice == 'Build Project':
         with open(f'checkpoint/model_gensim_{date}.pkl', 'wb') as fs:
             pickle.dump(model_gensim, fs, pickle.HIGHEST_PROTOCOL)
     # Upload file als
-    uploaded_file_als = st.file_uploader("Choose a file for collaboration", type=['csv'])
-    if uploaded_file_als is not None:
-        df_als = pd.read_csv(uploaded_file_als, encoding='latin-1')
-        date = int(datetime.now().timestamp())
-        df_als.to_csv(f"review{date}.csv", index = False)
-        rmse = mode_als(df_als)
-        print("RMSE =",rmse)
+    # uploaded_file_als = st.file_uploader("Choose a file for collaboration", type=['csv'])
+    # if uploaded_file_als is not None:
+    #     df_als = pd.read_csv(uploaded_file_als, encoding='latin-1')
+    #     date = int(datetime.now().timestamp())
+    #     df_als.to_csv(f"review{date}.csv", index = False)
+    #     rmse = mode_als(df_als)
+    #     print("RMSE =",rmse)
         
 elif choice == 'Prediction':
     type = st.radio("## Choice Content-base or Collaboration", options=("Content-base", "Collaboration"))
