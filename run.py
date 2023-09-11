@@ -1,13 +1,9 @@
 import json
 import pickle
-import random
 import math
 
-import numpy as np
 import pandas as pd
 import streamlit as st
-# import seaborn as sns
-# import matplotlib.pyplot as plt
 
 from datetime import datetime
 from modules.model_gensim import ModelGensim
@@ -97,33 +93,38 @@ elif choice == 'Build Project':
         if train_type == "Content Based":
             st.write(" ##### Summit a file for Content Based Model")
             uploaded_file_gensim = st.file_uploader("", type=['csv'])
-            if uploaded_file_gensim is not None:
+            bt_start = st.button("Train")
+            if uploaded_file_gensim and bt_start:
                 # dataframe
-                df_gensim = pd.read_csv(uploaded_file_gensim, encoding='latin-1')
+                df_gensim = pd.read_csv(uploaded_file_gensim, encoding='latin-1').dropna()
                 date = int(datetime.now().timestamp())
                 df_gensim.to_csv(f"data/product_{date}.csv", index = False)
                 df_train = df_gensim[['item_id', 'name', 'description', 'group']]
-                df_train = df_train.dropna()
-                df_train = df_train.drop_duplicates()
                 df_train["name_view_group"] =  df_train['name'] + ' ' + df_train['description'] + ' ' + df_train['group']
                 # model
-                model_gensim = ModelGensim('data/vietnamese-stopwords.txt')
-                model_gensim.train(df_gensim["name_view_group"].tolist())
-                # save_model
-                with open(f'checkpoint/model_gensim_{date}.pkl', 'wb') as fs:
-                    pickle.dump(model_gensim, fs, pickle.HIGHEST_PROTOCOL)
-                st.write("Training: Done")
+                with st.spinner('Wait for it...'):
+                    model_gensim_v1 = ModelGensim('data/vietnamese-stopwords.txt')
+                    model_gensim_v1.train(df_train["name_view_group"].tolist())
+                    # save_model
+                    with open(f'checkpoint/model_gensim_{date}.pkl', 'wb') as fs:
+                        pickle.dump(model_gensim_v1, fs, pickle.HIGHEST_PROTOCOL)
+                model_gensim = model_gensim_v1
+                st.success('Done!')
+
         # Upload file als
         elif train_type == "Collaborative Filtering":
             st.write("##### Summit a file for Collaborative Filtering Model")
             uploaded_file_als = st.file_uploader("", type=['csv'])
-            if uploaded_file_als is not None:
-                df_als = pd.read_csv(uploaded_file_als, encoding='latin-1')
-                date = int(datetime.now().timestamp())
-                df_als.to_csv(f"review{date}.csv", index = False)
-                rmse = mode_als(df_als)
-                st.write("Training: Done")
-                st.write(f"RMSE = {rmse}")
+            bt_start = st.button("Train")
+            if uploaded_file_als and bt_start:
+                with st.spinner('Wait for it...'):
+                    df_als = pd.read_csv(uploaded_file_als, encoding='latin-1')
+                    date = int(datetime.now().timestamp())
+                    df_als.to_csv(f"data/review{date}.csv", index = False)
+                    rmse = mode_als(df_als)
+                    st.write("Training: Done")
+                    st.write(f"Validation with RMSE = {rmse}")
+                st.success('Done!')
         
 elif choice == 'Content-base':
     # Upload file

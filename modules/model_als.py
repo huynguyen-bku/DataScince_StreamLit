@@ -16,14 +16,15 @@ spark = SparkSession.builder.appName('ALS').getOrCreate()
 
 def mode_als(df):
     # read data
-    data = spark.createDataFrame(df)
-    data_train = data.select("customer_id", "product_id", "rating")
-    data_train = data_train.dropna()
+    df = df[["customer_id", "product_id", "rating"]].dropna()
+    df["customer_id"] = df["customer_id"].astype(int)
+    df["product_id"] = df["product_id"].astype(int)
+    df["rating"] = df["rating"].astype(int)
+    data_train = spark.createDataFrame(df)
     data_train = data_train.dropDuplicates()
 
     # split data 
     train, test = data_train.randomSplit([0.9, 0.1])
-
     # model
     als = ALS(rank = 10,
             regParam = 0.5,
@@ -50,9 +51,9 @@ def mode_als(df):
     test_dit = df_result.set_index('customer_id')['recommendations'].to_dict()
     dict_save = {}
     for ele in test_dit.keys():
-       dict_save[ele] = [(x['product_id'],x['rating']) for x in test_dit[ele]]
+       dict_save[str(ele)] = [(x['product_id'],x['rating']) for x in test_dit[ele]]
     date = int(datetime.now().timestamp())
-    with open(f'mode_als_{date}.json', 'w') as fp:
+    with open(f'data/mode_als_{date}.json', 'w') as fp:
         json.dump(dict_save, fp)
         
     return rmse 
