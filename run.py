@@ -124,6 +124,7 @@ elif choice == 'Build Project':
                 #     rmse = mode_als(df_als)
                 #     st.write("Training: Done")
                 #     st.write(f"Validation with RMSE = {rmse}")
+                
                 st.success('Done!')
         
 elif choice == 'Content-base':
