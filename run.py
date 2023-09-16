@@ -125,7 +125,7 @@ elif choice == 'Build Project':
                 #     st.write("Training: Done")
                 #     st.write(f"Validation with RMSE = {rmse}")
                 
-                st.success('Done!')
+                st.write('Done!')
         
 elif choice == 'Content-base':
     # Upload file
