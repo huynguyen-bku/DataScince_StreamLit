@@ -7,7 +7,7 @@ import streamlit as st
 
 from datetime import datetime
 from modules.model_gensim import ModelGensim
-from modules.model_als import mode_als
+# from modules.model_als import mode_als
 
 # 
 def display_product(result):
@@ -117,13 +117,13 @@ elif choice == 'Build Project':
             uploaded_file_als = st.file_uploader("", type=['csv'])
             bt_start = st.button("Train")
             if uploaded_file_als and bt_start:
-                with st.spinner('Wait for it...'):
-                    df_als = pd.read_csv(uploaded_file_als, encoding='latin-1')
-                    date = int(datetime.now().timestamp())
-                    df_als.to_csv(f"data/review{date}.csv", index = False)
-                    rmse = mode_als(df_als)
-                    st.write("Training: Done")
-                    st.write(f"Validation with RMSE = {rmse}")
+                # with st.spinner('Wait for it...'):
+                #     df_als = pd.read_csv(uploaded_file_als, encoding='latin-1')
+                #     date = int(datetime.now().timestamp())
+                #     df_als.to_csv(f"data/review{date}.csv", index = False)
+                #     rmse = mode_als(df_als)
+                #     st.write("Training: Done")
+                #     st.write(f"Validation with RMSE = {rmse}")
                 st.success('Done!')
         
 elif choice == 'Content-base':
